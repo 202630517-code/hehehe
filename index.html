@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>저승사자의 숙제 심판소 : 매콤한 인생 환불 판정</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border: 2px solid #333;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2rem;
+            color: #ff3333;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .reaper-box {
+            background-color: #121212;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .reaper-avatar {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        .dialogue {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #fff;
+            word-break: keep-all;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #262626;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .btn:hover {
+            background-color: #333;
+            border-color: #ff3333;
+            color: #ff3333;
+            transform: translateY(-2px);
+        }
+
+        .btn-restart {
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn-restart:hover {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        .hp-bar-container {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .hp-label {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .hp-bar {
+            width: 100%;
+            height: 12px;
+            background-color: #333;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .hp-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #ff3333, #ff6666);
+            transition: width 0.3s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .spicy-quote {
+            font-style: italic;
+            color: #ff9999;
+            margin-top: 15px;
+            padding: 10px;
+            border-left: 3px solid #ff3333;
+            background: rgba(255, 0, 0, 0.1);
+            text-align: left;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>💀 저승사자의 숙제 심판소 💀</h1>
+
+    <div class="hp-bar-container" id="hpContainer">
+        <div class="hp-label">
+            <span>미래 지분율 (정신력)</span>
+            <span id="hpText">100%</span>
+        </div>
+        <div class="hp-bar">
+            <div class="hp-fill" id="hpFill"></div>
+        </div>
+    </div>
+
+    <div class="reaper-box">
+        <div class="reaper-avatar" id="avatar">☠️</div>
+        <div class="dialogue" id="dialogueText">
+            "오호라... 숙제를 또 안 하고 빈둥거리는 영혼이 있구나. 명부에 네 이름 석 자 적히기 전에 어디 핑계나 들어보자."
+        </div>
+    </div>
+
+    <div class="options-grid" id="optionsContainer">
+        <!-- 버튼들이 자바스크립트로 생성됩니다 -->
+    </div>
+
+    <div id="resultBox" class="hidden">
+        <div class="spicy-quote" id="spicyQuote"></div>
+        <button class="btn btn-restart" onclick="startGame()">다시 심판받기 (재도전)</button>
+    </div>
+</div>
+
+<script>
+    const scriptData = {
+        start: {
+            avatar: "☠️",
+            text: "오호라... 숙제를 또 안 하고 빈둥거리는 영혼이 있구나. 명부에 네 이름 석 자 적히기 전에 어디 핑계나 들어보자. 왜 숙제를 안 했느냐?",
+            options: [
+                { text: "너무 바빠서 시간이 없었어요!", next: "busy", hpDamage: 20 },
+                { text: "어차피 해도 나중에 다 잊어버리잖아요?", next: "philosophical", hpDamage: 30 },
+                { text: "내일부터 진짜 열공할 겁니다!", next: "tomorrow", hpDamage: 25 },
+                { text: "죄송합니다... 지금 당장 하러 가겠습니다!", next: "repent", hpDamage: 0 }
+            ]
+        },
+        busy: {
+            avatar: "👹",
+            text: "바빠? 유튜브 쇼츠 보느라 3시간 동안 손가락 튕긴 건 '지옥의 훈련'이었냐? 핑계가 아주 찰지구나!",
+            options: [
+                { text: "잠깐 폰 본 것뿐인데요...", next: "phone", hpDamage: 25 },
+                { text: "사람이 좀 쉴 수도 있죠!", next: "rest", hpDamage: 25 }
+            ]
+        },
+        philosophical: {
+            avatar: "🗿",
+            text: "오, 철학자인 척하는 거냐? 밥은 어차피 배고파질 텐데 왜 먹고, 똥은 어차피 싸는데 왜 누냐? 뇌까지 청순하게 비워둘 셈이냐?",
+            options: [
+                { text: "으윽... 반박을 못하겠다.", next: "realize", hpDamage: 20 },
+                { text: "그래도 공부는 제 적성에 안 맞아요.", next: "aptitude", hpDamage: 30 }
+            ]
+        },
+        tomorrow: {
+            avatar: "⏳",
+            text: "'내일의 나'는 무슨 죄냐? 네가 미룬 똥을 왜 내일의 네가 치워야 해? 지옥에서 제일 먼저 타오르는 게 바로 네 '내일'이다!",
+            options: [
+                { text: "오늘 밤새워서 하겠습니다!", next: "allnight", hpDamage: 15 },
+                { text: "내일 진짜 할 건데요? 진짜로!", next: "lying", hpDamage: 35 }
+            ]
+        },
+        phone: {
+            avatar: "📱",
+            text: "스마트폰 빛에 눈뽕 당하면서 네 인생 우선순위도 같이 타버린 거 안 보이냐? 숏폼 뇌가 되어가고 있구나!",
+            options: [
+                { text: "반성하고 폰 끄겠습니다.", next: "repent", hpDamage: 0 },
+                { text: "하지만 재미있는 걸 어떡해요...", next: "doomed", hpDamage: 40 }
+            ]
+        },
+        rest: {
+            avatar: "🛌",
+            text: "아무것도 안 했는데 뭘 쉬어? 움직여야 휴식이지, 그건 뇌사 체험 판정이다! 저승에서도 너처럼 누워만 있는 애들은 영원히 굴린다.",
+            options: [
+                { text: "사자님, 무섭습니다... 공부할게요.", next: "repent", hpDamage: 0 },
+                { text: "그냥 굴려주세요. 쉬고 싶어요.", next: "doomed", hpDamage: 40 }
+            ]
+        },
+        aptitude: {
+            avatar: "🔥",
+            text: "적성? 성실함도 없이 적성타령이라니! 숙제 하나 안 참는 인내심으로 세상 나가서 뭘 버틸 건데? 멘탈이 탕후루 설탕껍질보다 얇구나!",
+            options: [
+                { text: "뼈 맞았습니다... 숙제할게요.", next: "repent", hpDamage: 0 },
+                { text: "어떻게든 살아지겠죠!", next: "doomed", hpDamage: 40 }
+            ]
+        },
+        realize: {
+            avatar: "⚔️",
+            text: "말문이 막혔으면 손가락을 움직여서 연필을 잡아라. 저승사자보다 무서운 게 '아무것도 안 한 10년 뒤의 너'다.",
+            options: [
+                { text: "지금 당장 책상으로 가겠습니다!", next: "repent", hpDamage: 0 }
+            ]
+        },
+        allnight: {
+            avatar: "👻",
+            text: "벼락치기 하다가 졸려서 또 자겠지! 지금 10분 하는 게 밤샘 3시간보다 낫다. 당장 시작해라!",
+            options: [
+                { text: "네! 지금 바로 펼치겠습니다!", next: "repent", hpDamage: 0 }
+            ]
+        },
+        lying: {
+            avatar: "🚨",
+            text: "너 어제도 똑같은 소리 했지? 거짓말 수첩에 네 지혈점 찍어버리기 전에 책 펴라!",
+            options: [
+                { text: "히익! 잘못했습니다!", next: "repent", hpDamage: 0 }
+            ]
+        },
+        // 엔딩들
+        repent: {
+            avatar: "✨",
+            text: "그래, 늦었다고 생각할 때가 진짜 늦은 거지만, 지금이라도 하면 살 길은 열린다. 당장 폰 끄고 책상으로 꺼져라!",
+            isEnd: true,
+            spicyAdvice: "🔥 **매콤 인생 조언**: 숙제는 지식을 쌓는 게 아니라 '내가 한 약속을 지키는 훈련'이다. 오늘 미룬 숙제 하나가 내일 네가 받을 연봉과 자존감을 깎아먹는다. 귀찮음을 이기는 게 진짜 능력이다!"
+        },
+        doomed: {
+            avatar: "💀",
+            text: "[심판 완료] 너는 이미 포기했구나... 네 미래는 저승 편의점 야간 알바 자리로 예약해두겠다. 저승에서 보자!",
+            isEnd: true,
+            spicyAdvice: "☠️ **매콤 인생 조언**: 남들이 노력할 때 핑계만 대던 사람들의 끝은 언제나 '남 탓'과 '후회' 뿐이다. 아무것도 하지 않으면 아무것도 되지 않는다. 지금 안 바꾸면 평생 그렇게 산다."
+        }
+    };
+
+    let currentHp = 100;
+
+    function startGame() {
+        currentHp = 100;
+        updateHp(0);
+        document.getElementById("resultBox").classList.add("hidden");
+        document.getElementById("optionsContainer").classList.remove("hidden");
+        renderNode("start");
+    }
+
+    function updateHp(damage) {
+        currentHp = Math.max(0, currentHp - damage);
+        const fill = document.getElementById("hpFill");
+        const text = document.getElementById("hpText");
+        fill.style.width = currentHp + "%";
+        text.innerText = currentHp + "%";
+
+        if(currentHp < 30) {
+            fill.style.background = "linear-gradient(90deg, #8b0000, #ff0000)";
+        } else {
+            fill.style.background = "linear-gradient(90deg, #ff3333, #ff6666)";
+        }
+    }
+
+    function renderNode(nodeKey) {
+        const node = scriptData[nodeKey];
+        
+        document.getElementById("avatar").innerText = node.avatar;
+        document.getElementById("dialogueText").innerText = node.text;
+
+        const optionsContainer = document.getElementById("optionsContainer");
+        optionsContainer.innerHTML = "";
+
+        if (node.isEnd) {
+            document.getElementById("optionsContainer").classList.add("hidden");
+            const resultBox = document.getElementById("resultBox");
+            const spicyQuote = document.getElementById("spicyQuote");
+            spicyQuote.innerHTML = node.spicyAdvice;
+            resultBox.classList.remove("hidden");
+            return;
+        }
+
+        node.options.forEach(option => {
+            const btn = document.createElement("button");
+            btn.className = "btn";
+            btn.innerText = option.text;
+            btn.onclick = () => {
+                if (option.hpDamage) updateHp(option.hpDamage);
+                if (currentHp <= 0) {
+                    renderNode("doomed");
+                } else {
+                    renderNode(option.next);
+                }
+            };
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    // 게임 시작
+    startGame();
+</script>
+
+</body>
+</html>
